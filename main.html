@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lodam</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <div id="container">
+        <div id="header">
+            <img src="img/mokoko1.png">
+            <div>LODAM.COM</div>
+            <div>시뮬레이터</div>
+        </div>
+        <div id="body">
+            <div id="logo">LODAM</div>
+            <!-- form이 필요하다면 추가시킬것 -->
+            <div id="Frame">
+                <div id="next">></div>
+                <div id="weeklyContainer">
+                    <div id="weeklyabyss"></div>
+                    <div id="weeklyguardian"></div>
+                </div>
+            </div>
+            <fieldset>
+                <select name="server" id="search-select">
+                    <option value="KR">KR</option>
+                    <option value="NA">NA</option>
+                </select>
+                <input type="text" id="search-input">
+                <button id="search-btn"><img src="img/mokoko1.png" id="search-btn-img"></button>
+            </fieldset>
+            <div id="result"></div>
+            <div id="result-stats"></div>
+            <div id="result-stats2"></div>
+            <div id="result-stats3"></div>
+            <img id="result-stats-img"></img>
+        </div>
+
+        <div id="footer">
+
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
