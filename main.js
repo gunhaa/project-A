@@ -139,8 +139,7 @@ async function moredetail() {
 
     let sumstats1 = search_stats(StringData);
     let sumstats2 = search_damage(data);
-    // let sumstats3 = search_w-damage(StringData);
-
+    let sumstats3 = search_w_damage(data);
 
     // $('#result-stats2').html(`무기 : ${stats.Element_000.value} <br> 무기공격력 : 무기(${stats.Element_006.value.Element_001})<br> 초월 추가 공격력 : ${stats.Element_008.value.Element_000.contentStr.Element_000.contentStr}`)
     $('#result-stats3').html(`총 스탯 : ${sumstats1}`)
@@ -208,7 +207,7 @@ function search_damage(data) {
     // 무기 초월 숫자 찾기
     const regexp1 = /<\/img>(\d{1,3})/;
     // 총 초월 숫자 탐색
-    const regexp2 = /<img src='emoticon_Transcendence_Grade' width='18' height='18' vspace ='-4'><\/img>(\d{2,3})/;
+    const regexp2 = /<img src='emoticon_Transcendence_Grade' width='18' height='18' vspace ='-4'><\/img>(\d{1,3})/;
     // 엘릭서(공격력)에 따른 추가 공격력(2~4자리수)
     const regexp3 = /<br>공격력\s*\+(\d{2,4})/g;
     // 배열에서 숫자만 다시 뽑기
@@ -219,13 +218,13 @@ function search_damage(data) {
     let result1 = JSON.parse(data[0].Tooltip).Element_008.value.Element_000.topStr;
     let w_transcendence = Number(result1.match(regexp1)[1]);
 
-    if (w_transcendence <= 5) {
+    if (w_transcendence < 5) {
         damage += 0;
-    } else if (w_transcendence <= 10) {
+    } else if (w_transcendence < 10) {
         damage += 640;
-    } else if (w_transcendence <= 15) {
+    } else if (w_transcendence < 15) {
         damage += 1795;
-    } else if (w_transcendence <= 20) {
+    } else if (w_transcendence < 20) {
         damage += 2755;
     } else {
         damage += 3525;
@@ -241,7 +240,7 @@ function search_damage(data) {
     if (h_transcendence >= 20) {
         damage += 6 * all_transcendence;
     }
-    console.log(damage);
+    // console.log(damage);
     // 엘릭서에 따른 추가 공격력
 
     let result4 = JSON.stringify(data);
@@ -253,7 +252,7 @@ function search_damage(data) {
             damage += Number(result);
         });
     }
-    console.log(damage);
+    // console.log(damage);
 
 
     // console.log(JSON.stringify(data));
@@ -261,4 +260,70 @@ function search_damage(data) {
 
     return damage;
 
+}
+
+function search_w_damage(data) {
+    let w_damage = 0;
+    const strdata = JSON.stringify(data);
+
+    const w_damage_arr=[];
+    // 총 초월 숫자 탐색
+    const regexp1 = /<img src='emoticon_Transcendence_Grade' width='18' height='18' vspace ='-4'><\/img>(\d{1,3})/;
+    // 엘릭서(무기공격력)에 따른 추가 공격력(3~5자리수)
+    const regexp2 = /무기 공격력\s*\+(\d{3,5})/g;
+    // 배열에서 숫자만 다시 뽑기
+    const regExpNum = /\d+/g;
+
+    // 1. 무기 공격력+{4,5} 숫자열 검색 후 배열 w_damage_arr에 저장
+
+    while( (match = regexp2.exec(strdata)) !== null){
+        w_damage_arr.push(match[1]);
+    }
+
+    w_damage_arr.forEach((w_dmg)=>{
+        w_damage+=Number(w_dmg);
+        // console.log(w_dmg);
+    })
+
+    // 2. 총 초월에 따른 모자 초월 추가 무기 공격력 result1[1] 에 총 초월 값(126)이 담기게 됨
+    // 다 찾는거라 오류 발생가능성있음 무기 공격력 오류 생긴다면 여기임 (regexp)
+    let result1 = regexp1.exec(strdata);
+
+    // 모자 초월 갯수 구하기 (15<=모자초월) 14x(총 초월)
+    let data1 = JSON.parse(data[1].Tooltip);
+    let strtranscendencecap = data1.Element_009.value.Element_000.topStr;
+    let result2 = regexp1.exec(strtranscendencecap);
+    // result2[1]이 모자 초월 갯수
+    if(result2[1] >=15) {
+        w_damage+=Number(result1[1])*14;
+        console.log(Number(result1[1])*14);
+    }
+
+
+    // 3. 상의 초월에 따른 추가 무기 공격력
+    
+    let data2=JSON.parse(data[2].Tooltip);
+
+    let strtranscendence =data2.Element_009.value.Element_000.topStr;
+    
+    let shirt_transcendence = regexp1.exec(strtranscendence);
+
+    // shirt_transcendence[1] = 21 ; 상의 초월 갯수
+
+    if (shirt_transcendence[1] < 5) {
+        w_damage += 0;
+    } else if (shirt_transcendence[1] < 10) {
+        w_damage += 1600;
+    } else if (shirt_transcendence[1] < 15) {
+        w_damage += 1600;
+    } else if (shirt_transcendence[1] < 20) {
+        w_damage += 4320;
+    } else {
+        w_damage += 7200;
+    }
+
+    console.log(w_damage)
+    // 로스트 빌드랑 비교해서 660이 부족한데, 기본 무기 공격력같음. 내일 확인해볼것
+
+    return w_damage;
 }
