@@ -17,6 +17,8 @@ function searcharacter(event) {
     weeklyGuardian();
     detailstats();
     moredetail();
+    engraving();
+    skills();
 }
 
 input.addEventListener("keydown", function (event) {
@@ -326,4 +328,38 @@ function search_w_damage(data) {
     // 로스트 빌드랑 비교해서 660이 부족한데, 기본 무기 공격력같음. 내일 확인해볼것
 
     return w_damage;
+}
+
+
+async function engraving(){
+    // 각인 추가 시키던가, 뽑아오던가 해야함
+    const response = await fetch (`https://developer-lostark.game.onstove.com/armories/characters/${inform}/engravings`, {
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${API_KEY}`
+        }
+    })
+
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error('engraving error');
+    }
+
+    // const result = JSON.parse(data);
+    console.log(data);
+}
+
+
+
+async function skills(){
+
+    const response = await fetch(`https://developer-lostark.game.onstove.com/armories/characters/${inform}/combat-skills`, {
+        headers : {
+            Accept: 'application/json',
+            Authorization: `bearer ${API_KEY}`
+        }
+    });
+
+    const data = await response.json();
+    console.log(data);
 }
